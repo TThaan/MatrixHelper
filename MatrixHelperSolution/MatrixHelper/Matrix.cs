@@ -5,13 +5,16 @@ using System.Linq;
 
 namespace MatrixHelper
 {
-    public class Matrix : IMatrix, IEnumerable<float>
+    /// <summary>
+    /// wa: Base class Matrix plus child class StoringMatrix incl fields transpose, rows and columns?
+    /// </summary>
+    public class Matrix : IEnumerable<float>    // IMatrix, 
     {
         #region fields
 
         float[,] content;
         int _m, _n;
-        IMatrix transpose;
+        Matrix transpose;
 
         #endregion
 
@@ -19,8 +22,8 @@ namespace MatrixHelper
 
         /// <summary>
         /// </summary>
-        /// <param name="m">amount of rows (= y-axis)</param>
-        /// <param name="n">amount of columns (= x-axis)</param>
+        /// <param name="m">amount of rows</param>
+        /// <param name="n">amount of columns</param>
         public Matrix(int m, int n)
         {
             this.m = m;
@@ -75,9 +78,9 @@ namespace MatrixHelper
         /// <summary>
         /// Get the matrix's transpose once and store it for later reuse.
         /// </summary>
-        public IMatrix Transpose => transpose ?? (transpose = GetTranspose());
+        public Matrix Transpose => transpose ?? (transpose = GetTranspose());
         /// <summary>
-        /// number of rows
+        /// amount of rows
         /// </summary>
         public int m 
         { 
@@ -85,13 +88,14 @@ namespace MatrixHelper
             private set { _m = value; } 
         }
         /// <summary>
-        /// number of columns
+        /// amount of columns
         /// </summary>
         public int n 
         {
             get { return _n; }
             private set { _n = value; }
         }
+        // Better GetRows as method to indicate it's an (effortful) action not a stored value?
         public float[][] Rows
         {
             get
@@ -112,6 +116,7 @@ namespace MatrixHelper
                 return result;
             }
         }
+        // Better GetColumns as method to indicate it's an (effortful) action not a stored value?
         public float[][] Columns
         {
             get
@@ -136,7 +141,7 @@ namespace MatrixHelper
         /// <summary>
         /// Get the matrix's transpose without storing it.
         /// </summary>
-        public IMatrix GetTranspose()
+        public Matrix GetTranspose()
         {
             float[,] result = new float[n, m];
             for (int x = 0; x < m; x++)
@@ -172,69 +177,29 @@ namespace MatrixHelper
 
         #region operator overloads
 
-        /// <summary>
-        /// a.m = b.m and 
-        /// a.n = b.n = 1
-        /// </summary>
-        public static IMatrix operator +(Matrix a, Matrix b)    // Forget about interface or operator overloading!
+        public static Matrix operator +(Matrix a, Matrix b)
         {
-            if (a.m != b.m || a.n != 1 || b.n != 1)
-            {
-                throw new ArgumentException(
-                    "a.m of a must equal b.m and" +
-                    "a.n and b.n must equal 1.");
-            }
-
-            return new Matrix(Enumerable.Range(0, a.m)
-                .Select((x, index) => a[index, 0] + b[index, 0])
-                .ToArray()
-                );
+            return Operations.Addition(a, b);
         }
-        /// <summary>
-        /// a.m = b.m and 
-        /// a.n = b.n = 1
-        /// </summary>
-        public static IMatrix operator -(Matrix a, Matrix b)
+        public static Matrix operator -(Matrix a, Matrix b)
         {
-            if (a.m != b.m || a.n != 1 || b.n != 1)
-            {
-                throw new ArgumentException(
-                    "a.m of a must equal b.m and" +
-                    "a.n and b.n must equal 1.");
-            }
-
-            return new Matrix(Enumerable.Range(0, a.m)
-                .Select((x, index) => a[index, 0] - b[index, 0])
-                .ToArray()
-                );
+            return Operations.Subtraction(a, b);
+        }
+        public static Matrix operator *(float a, Matrix b)
+        {
+            return Operations.ProductWithAScalar(a, b);
+        }
+        public static Matrix operator /(float a, Matrix b)
+        {
+            return Operations.DivisionWithAScalar(a, b);
+        }
+        public static Matrix operator *(Matrix a, Matrix b)
+        {
+            return Operations.ScalarProduct(a, b);
         }
 
-        /// <summary>
-        /// 'Simple' Scalar Product
-        /// </summary>
-        public static IMatrix operator *(float a, Matrix b)
-        {
-            float[,] arr = new float[b.m, b.n];
 
-            for (int x = 0; x < b.n; x++)
-            {
-                for (int y = 0; y < b.m; y++)
-                {
-                    arr[y, x] = a * b[y, x];
-                }
-            }
-            //float[,] arr = Enumerable.Range(0, b.m)
-            //    .Select(x =>
-            //        Enumerable.Range(0, b.n).Select(y => a * b[x, y])
-            //    ).ToArray();
-            var result = new Matrix(arr);
-            return result;
-        }
-        /// <summary>
-        /// Elementwise Product = Hadamard Product (or 
-        /// Outer/Kronecker Product if a & b have diff dimensions?).
-        /// </summary>
-        public static IMatrix operator *(Matrix a, Matrix b)
+        public static Matrix operator %(Matrix a, Matrix b)
         {
             if (a.m != b.m || a.n != 1 || b.n != 1)
             {
