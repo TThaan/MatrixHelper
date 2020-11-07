@@ -189,7 +189,15 @@ namespace MatrixHelper
         {
             return Operations.ProductWithAScalar(a, b);
         }
+        public static Matrix operator *(Matrix b, float a)
+        {
+            return Operations.ProductWithAScalar(a, b);
+        }
         public static Matrix operator /(float a, Matrix b)
+        {
+            return Operations.DivisionWithAScalar(a, b);
+        }
+        public static Matrix operator /(Matrix b, float a)
         {
             return Operations.DivisionWithAScalar(a, b);
         }
