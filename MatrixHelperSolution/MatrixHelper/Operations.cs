@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace MatrixHelper
 {
@@ -132,7 +133,7 @@ namespace MatrixHelper
             return result;
         }
         /// <summary>
-        /// Also called 'Elementwise Product'. 
+        /// Also called 'Elementwise Product' or 'Schur Product'. 
         /// Condition: a.m = b.m & a.n = b.n 
         /// </summary>
         public static Matrix HadamardProduct(Matrix a, Matrix b)
@@ -163,5 +164,19 @@ namespace MatrixHelper
         //{
         //    return (a, w, b) => InnerProduct(w, a) + b;
         //}
+
+        public static Matrix ChangeIntoOneColumn(Matrix a)
+        {
+            Matrix result = new Matrix((int)a.LongCount(), 1);
+            var check = a.Count();
+
+            int i = 0;
+            foreach (var item in a)
+            {
+                result[i++, 0] = item;
+            }
+
+            return result;
+        }
     }
 }

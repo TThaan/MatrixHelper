@@ -197,8 +197,40 @@ namespace MatrixHelper
         {
             return Operations.ScalarProduct(a, b);
         }
+        public static bool operator ==(Matrix a, Matrix b)
+        {
+            if (object.ReferenceEquals(a, null) &&
+                object.ReferenceEquals(b, null))
+                return true;
+            else if (object.ReferenceEquals(a, null) ||
+                object.ReferenceEquals(b, null))
+                return false;
 
+            if (a.m == b.m && a.n == b.n)
+                return a
+                    .Select((x, index) => x == b.ElementAt(index))
+                    .All(x => x == true);
+            else 
+                return false;
+        }
+        public static bool operator !=(Matrix a, Matrix b)
+        {
+            if (object.ReferenceEquals(a, null) &&
+                object.ReferenceEquals(b, null))
+                return false;
+            else if (object.ReferenceEquals(a, null) ||
+                object.ReferenceEquals(b, null))
+                return true;
 
+            if (a.m == b.m && a.n == b.n)
+                return a
+                    .Select((x, index) => x == b.ElementAt(index))
+                    .Any(x => x == false);
+            else
+                return true;
+        }
+
+        // Don't!?
         public static Matrix operator %(Matrix a, Matrix b)
         {
             if (a.m != b.m || a.n != 1 || b.n != 1)
