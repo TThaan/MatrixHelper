@@ -74,17 +74,35 @@ namespace MatrixHelper
 
         public float this[int y, int x]
         {
-            get => content[y, x];
+            get
+            {
+                if (n == 1)
+                    throw new ArgumentException("This matrix has no second dimension and cannot process 'x'.");
+
+                return content[y, 1];
+            }
             set
             {
+                if (n == 1)
+                    throw new ArgumentException("This matrix has no second dimension and cannot process 'x'.");
+
                 content[y, x] = value;
             }
         }
         public float this[int y]
         {
-            get => content[y, 1];
+            get
+            {
+                if (n > 1)
+                    throw new ArgumentException("This matrix has a second dimension and needs it's value 'x'.");
+
+                return content[y, 1]; 
+            }
             set
             {
+                if (n > 1)
+                    throw new ArgumentException("This matrix has a second dimension and needs it's value 'x'.");
+
                 content[y, 1] = value;
             }
         }
