@@ -256,15 +256,14 @@ namespace MatrixHelper
         //    return (a, w, b) => InnerProduct(w, a) + b;
         //}
 
-        public static Matrix ChangeIntoOneColumn(Matrix a)
+        public static Matrix FlattenToOneColumn(Matrix a)
         {
-            Matrix result = new Matrix((int)a.LongCount(), 1);
-            var check = a.Count();
+            Matrix result = new Matrix((int)a.LongCount());
 
             int i = 0;
             foreach (var item in a)
             {
-                result[i++, 0] = item;
+                result[i++] = item;
             }
 
             return result;
