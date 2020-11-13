@@ -13,6 +13,7 @@ namespace MatrixHelper
         #region fields
 
         float[,] content;
+        // float[] vectorContent;
         int _m, _n;
         Matrix transpose;
 
@@ -32,6 +33,16 @@ namespace MatrixHelper
             content = new float[m, n];
         }
         /// <summary>
+        /// </summary>
+        /// <param name="m">amount of rows</param>
+        public Matrix(int m)
+        {
+            this.m = m;
+            n = 1;
+
+            content = new float[m, n];
+        }
+        /// <summary>
         /// first dimension = m = y = height
         /// </summary>
         /// <param name="array"></param>
@@ -40,10 +51,9 @@ namespace MatrixHelper
             m = array.Length;
             n = 1;
 
-            content = new float[m, n];
-            for (int y = 0; y < m; y++)
+            for (int j = 0; j < m; j++)
             {
-                content[y, 0] = array[y];
+                content[j,n] = array[j];
             }
         }
         /// <summary>
@@ -68,6 +78,14 @@ namespace MatrixHelper
             set
             {
                 content[y, x] = value;
+            }
+        }
+        public float this[int y]
+        {
+            get => content[y, 1];
+            set
+            {
+                content[y, 1] = value;
             }
         }
 
