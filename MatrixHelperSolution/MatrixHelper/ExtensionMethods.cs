@@ -6,11 +6,11 @@ namespace MatrixHelper
 {
     public static class ExtensionMethods
     {
-        public static Matrix DumpToConsole(this Matrix a, string denominator, bool waitForEnter = false)
+        public static Matrix DumpToConsole(this Matrix a, string title)
         {
-            if (!string.IsNullOrEmpty(denominator))
+            if (!string.IsNullOrEmpty(title))
             {
-                Console.WriteLine(denominator);
+                Console.WriteLine(title);
             }
 
             Console.Write(" ");
@@ -22,9 +22,16 @@ namespace MatrixHelper
 
             for (int j = 0; j < a.m; j++)
             {
-                for (int k = 0; k < a.n; k++)
+                if (a.n == 1)
                 {
-                    Console.Write(string.Format("|{0, 15}", a[j, k]));
+                    Console.Write(string.Format("|{0, 15}", a[j]));
+                }
+                else
+                {
+                    for (int k = 0; k < a.n; k++)
+                    {
+                        Console.Write(string.Format("|{0, 15}", a[j, k]));
+                    }
                 }
                 Console.WriteLine("|");
             }
@@ -34,10 +41,6 @@ namespace MatrixHelper
             {
                 Console.Write("----------------");
             }
-
-            if (waitForEnter)
-                Console.ReadLine();
-            Console.WriteLine();
 
             return a;
         }

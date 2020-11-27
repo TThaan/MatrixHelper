@@ -8,6 +8,7 @@ namespace MatrixHelper
     /// <summary>
     /// wa: Base class Matrix plus child class StoringMatrix incl fields transpose, rows and columns?
     /// </summary>
+    [Serializable]
     public class Matrix : IEnumerable<float>    // IMatrix, 
     {
         #region fields
@@ -50,10 +51,11 @@ namespace MatrixHelper
         {
             m = array.Length;
             n = 1;
+            content = new float[m, n];
 
             for (int j = 0; j < m; j++)
             {
-                content[j,n] = array[j];
+                content[j,0] = array[j];
             }
         }
         /// <summary>
@@ -76,14 +78,14 @@ namespace MatrixHelper
         {
             get
             {
-                if (n == 1)
+                if (n == 1 && x > 0)
                     throw new ArgumentException("This matrix has no second dimension and cannot process 'x'.");
 
-                return content[y, 1];
+                return content[y, x];
             }
             set
             {
-                if (n == 1)
+                if (n == 1 && x > 0)
                     throw new ArgumentException("This matrix has no second dimension and cannot process 'x'.");
 
                 content[y, x] = value;
@@ -96,14 +98,14 @@ namespace MatrixHelper
                 if (n > 1)
                     throw new ArgumentException("This matrix has a second dimension and needs it's value 'x'.");
 
-                return content[y, 1]; 
+                return content[y, 0]; 
             }
             set
             {
                 if (n > 1)
                     throw new ArgumentException("This matrix has a second dimension and needs it's value 'x'.");
 
-                content[y, 1] = value;
+                content[y, 0] = value;
             }
         }
 

@@ -256,6 +256,18 @@ namespace MatrixHelper
         //    return (a, w, b) => InnerProduct(w, a) + b;
         //}
 
+        //public static Matrix FunctionOf(Matrix a, Func)
+        //{
+        //    Matrix result = new Matrix((int)a.LongCount());
+
+        //    int i = 0;
+        //    foreach (var item in a)
+        //    {
+        //        result[i++] = item;
+        //    }
+
+        //    return result;
+        //}
         public static Matrix FlattenToOneColumn(Matrix a)
         {
             Matrix result = new Matrix((int)a.LongCount());
