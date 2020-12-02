@@ -7,6 +7,7 @@ namespace MatrixHelper
 {
     /// <summary>
     /// wa: Base class Matrix plus child class StoringMatrix incl fields transpose, rows and columns?
+    /// wa: ByteMatrix incl binary operations?
     /// </summary>
     [Serializable]
     public class Matrix : IEnumerable<float>    // IMatrix, 
@@ -68,6 +69,21 @@ namespace MatrixHelper
 
             m = array.GetLength(0);
             n = array.GetLength(1);
+        }
+        /// <summary>
+        /// Copy Constructor
+        /// </summary>
+        public Matrix(Matrix matrix)
+        {
+            content = new float[matrix.m, matrix.n];            
+
+            for (int j = 0; j < matrix.m; j++)
+            {
+                for (int k = 0; k < matrix.n; k++)
+                {
+                    content[j, k] = matrix[j, k];
+                }
+            }
         }
 
         #endregion

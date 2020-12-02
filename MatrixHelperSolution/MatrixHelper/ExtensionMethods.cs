@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace MatrixHelper
 {
@@ -43,6 +41,34 @@ namespace MatrixHelper
             }
 
             return a;
+        }
+        public static Matrix ForEach(this Matrix a, Func<float, float> func)
+        {
+            Matrix result = new Matrix(a.m, a.n);
+
+            for (int j = 0; j < a.m; j++)
+            {
+                for (int k = 0; k < a.n; k++)
+                {
+                    result[j,k]= func(a[j, k]);
+                }
+            }
+
+            return result;
+        }
+        public static Matrix ForEach(this Matrix a, Matrix b, Func<float, float> func)
+        {
+            Matrix result = new Matrix(a.m, a.n);
+
+            for (int j = 0; j < a.m; j++)
+            {
+                for (int k = 0; k < a.n; k++)
+                {
+                    result[j, k] = func(b[j, k]);
+                }
+            }
+
+            return result;
         }
     }
 }
