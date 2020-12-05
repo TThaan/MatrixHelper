@@ -56,18 +56,6 @@ namespace MatrixHelper
 
             return result;
         }
-        public static Matrix ForEach(this Matrix a, Func<float, float> func)
-        {
-            for (int j = 0; j < a.m; j++)
-            {
-                for (int k = 0; k < a.n; k++)
-                {
-                    a[j, k] = func(a[j, k]);
-                }
-            }
-
-            return a;
-        }
         /// <summary>
         /// This func takes the value of matrix b[j,k] as parameter and 
         /// its' return value becomes the new value of matrix a[j,k].
@@ -86,26 +74,38 @@ namespace MatrixHelper
 
             return result;
         }
+
+        #region returning the same matrix and ignoring size checks
+
+        public static Matrix ForEach(this Matrix result, Func<float, float> func)
+        {
+            for (int j = 0; j < result.m; j++)
+            {
+                for (int k = 0; k < result.n; k++)
+                {
+                    result[j, k] = func(result[j, k]);
+                }
+            }
+
+            return result;
+        }
         /// <summary>
         /// This func takes the value of matrix b[j,k] as parameter and 
         /// its' return value becomes the new value of matrix a[j,k].
         /// </summary>
-        public static Matrix ForEach(this Matrix a, Matrix b, Func<float, float> func)
+        public static Matrix ForEach(this Matrix result, Matrix b, Func<float, float> func)
         {
-            for (int j = 0; j < a.m; j++)
+            for (int j = 0; j < result.m; j++)
             {
-                for (int k = 0; k < a.n; k++)
+                for (int k = 0; k < result.n; k++)
                 {
-                    a[j, k] = func(b[j, k]);
+                    result[j, k] = func(b[j, k]);
                 }
             }
 
-            return a;
+            return result;
         }
-
-        #region returning the same matrix and ignoring size checks
-
-        public static Matrix AddTo(this Matrix result, Matrix b)
+        public static Matrix Add(this Matrix result, Matrix b)
         {
             for (int x = 0; x < b.n; x++)
             {
@@ -116,7 +116,7 @@ namespace MatrixHelper
             }
             return result;
         }
-        public static Matrix SubtractFrom(this Matrix result, Matrix b)
+        public static Matrix Subtract(this Matrix result, Matrix b)
         {
             for (int x = 0; x < b.n; x++)
             {
@@ -127,7 +127,7 @@ namespace MatrixHelper
             }
             return result;
         }
-        public static Matrix MultiplicateWith(this Matrix result, float f)
+        public static Matrix Multiplicate(this Matrix result, float f)
         {
             for (int x = 0; x < result.n; x++)
             {
@@ -138,7 +138,7 @@ namespace MatrixHelper
             }
             return result;
         }
-        public static Matrix DivideBy(this Matrix result, float f)
+        public static Matrix Divide(this Matrix result, float f)
         {
             for (int x = 0; x < result.n; x++)
             {
@@ -149,7 +149,7 @@ namespace MatrixHelper
             }
             return result;
         }
-        public static Matrix MultiplicateLikeHadamardWith(this Matrix result, Matrix b)
+        public static Matrix MultiplicateLikeHadamard(this Matrix result, Matrix b)
         {
             for (int x = 0; x < result.n; x++)
             {
