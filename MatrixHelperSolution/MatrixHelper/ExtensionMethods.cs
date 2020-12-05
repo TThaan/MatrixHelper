@@ -160,7 +160,7 @@ namespace MatrixHelper
             }
             return result;
         }
-        public static Matrix GetSacalarProduct(this Matrix result, Matrix a, Matrix b)
+        public static Matrix GetScalarProduct(this Matrix result, Matrix a, Matrix b)
         {
             // For each row of matrix 'a'
             for (int y = 0; y < a.m; y++)
