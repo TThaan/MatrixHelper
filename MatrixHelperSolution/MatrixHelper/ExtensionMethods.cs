@@ -234,6 +234,9 @@ namespace MatrixHelper
         }
         public static Matrix GetScalarProduct(this Matrix result, Matrix a, Matrix b)
         {
+            // Make sure the result has only 0 - values
+            result.ForEach(x => 0);
+
             // For each row of matrix 'a'
             for (int y = 0; y < a.m; y++)
             {
@@ -243,6 +246,10 @@ namespace MatrixHelper
                     // iterate over each value of a's columns and b's rows (a.n=b.m)
                     for (int z = 0; z < a.n; z++)
                     {
+                        // make sure the result has only 0 - values
+                        //if (z == 0)
+                        //    result[y, x] = 0;
+
                         // and compute their scalar product
                         result[y, x] += a[y, z] * b[z, x];
                     }
