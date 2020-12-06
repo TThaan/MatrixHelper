@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace MatrixHelper
 {
@@ -41,6 +42,17 @@ namespace MatrixHelper
             }
 
             return a;
+        }
+        public static List<float> ToList(this Matrix a)
+        {
+            List<float> result = new List<float>(a.m * a.n);
+
+            foreach (var item in a)
+            {
+                result.Add(item);
+            }
+
+            return result;
         }
         public static Matrix ForEach_New(this Matrix a, Func<float, float> func)
         {
