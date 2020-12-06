@@ -75,7 +75,7 @@ namespace MatrixHelper
             return result;
         }
 
-        #region returning the same matrix and ignoring size checks
+        #region returning one of the matrices involved in the formula and ignoring size checks
 
         public static Matrix ForEach(this Matrix result, Func<float, float> func)
         {
@@ -105,57 +105,117 @@ namespace MatrixHelper
 
             return result;
         }
-        public static Matrix Add(this Matrix result, Matrix b)
-        {
-            for (int x = 0; x < b.n; x++)
-            {
-                for (int y = 0; y < b.m; y++)
-                {
-                    result[y, x] = result[y, x] + b[y, x];
-                }
-            }
-            return result;
-        }
-        public static Matrix Subtract(this Matrix result, Matrix b)
-        {
-            for (int x = 0; x < b.n; x++)
-            {
-                for (int y = 0; y < b.m; y++)
-                {
-                    result[y, x] = result[y, x] - b[y, x];
-                }
-            }
-            return result;
-        }
-        public static Matrix Multiplicate(this Matrix result, float f)
+        public static Matrix Add(this Matrix result, Matrix addend)
         {
             for (int x = 0; x < result.n; x++)
             {
                 for (int y = 0; y < result.m; y++)
                 {
-                    result[y, x] = result[y, x] * f;
+                    result[y, x] = result[y, x] + addend[y, x];
                 }
             }
             return result;
         }
-        public static Matrix Divide(this Matrix result, float f)
+        public static Matrix Subtract(this Matrix result, Matrix subtrhend)
         {
             for (int x = 0; x < result.n; x++)
             {
                 for (int y = 0; y < result.m; y++)
                 {
-                    result[y, x] = result[y, x] / f;
+                    result[y, x] = result[y, x] - subtrhend[y, x];
                 }
             }
             return result;
         }
-        public static Matrix MultiplicateLikeHadamard(this Matrix result, Matrix b)
+        public static Matrix Multiplicate(this Matrix result, float factor)
+        {
+            for (int x = 0; x < result.n; x++)
+            {
+                for (int y = 0; y < result.m; y++)
+                {
+                    result[y, x] = result[y, x] * factor;
+                }
+            }
+            return result;
+        }
+        public static Matrix Divide(this Matrix result, float divisor)
+        {
+            for (int x = 0; x < result.n; x++)
+            {
+                for (int y = 0; y < result.m; y++)
+                {
+                    result[y, x] = result[y, x] / divisor;
+                }
+            }
+            return result;
+        }
+        public static Matrix GetHadamardProduct(this Matrix result, Matrix b)
         {
             for (int x = 0; x < result.n; x++)
             {
                 for (int y = 0; y < result.m; y++)
                 {
                     result[y, x] = result[y, x] * b[y, x];
+                }
+            }
+            return result;
+        }
+
+        #endregion
+
+        #region returning a dedicated result matrix (independent from formula) and ignoring size checks
+
+        public static Matrix Add(this Matrix result, Matrix a, Matrix b)
+        {
+            for (int x = 0; x < result.n; x++)
+            {
+                for (int y = 0; y < result.m; y++)
+                {
+                    result[y, x] = a[y, x] + b[y, x];
+                }
+            }
+            return result;
+        }
+        public static Matrix Subtract(this Matrix result, Matrix a, Matrix subtrahend)
+        {
+            for (int x = 0; x < result.n; x++)
+            {
+                for (int y = 0; y < result.m; y++)
+                {
+                    result[y, x] = a[y, x] - subtrahend[y, x];
+                }
+            }
+            return result;
+        }
+        public static Matrix Multiplicate(this Matrix result, Matrix a, float factor)
+        {
+            for (int x = 0; x < result.n; x++)
+            {
+                for (int y = 0; y < result.m; y++)
+                {
+                    result[y, x] = a[y, x] * factor;
+                }
+            }
+            return result;
+        }
+        public static Matrix Divide(this Matrix result, Matrix a, float divisor)
+        {
+            for (int x = 0; x < result.n; x++)
+            {
+                for (int y = 0; y < result.m; y++)
+                {
+                    result[y, x] = a[y, x] / divisor;
+                }
+            }
+            return result;
+        }
+        public static Matrix GetHadamardProduct(this Matrix result, Matrix a, Matrix b)
+        {
+            for (int x = 0; x < result.n; x++)
+            {
+                for (int y = 0; y < result.m; y++)
+                {
+                    result[y, x] = a[y, x] * b[y, x];
                 }
             }
             return result;

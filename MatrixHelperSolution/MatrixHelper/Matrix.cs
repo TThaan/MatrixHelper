@@ -9,13 +9,11 @@ namespace MatrixHelper
     /// wa: Base class Matrix plus child class StoringMatrix incl fields transpose, rows and columns?
     /// wa: ByteMatrix incl binary operations?
     /// </summary>
-    [Serializable]
     public class Matrix : IEnumerable<float>    // IMatrix, 
     {
         #region fields
 
         float[,] content;
-        // float[] vectorContent;
         int _m, _n;
         Matrix transpose;
 
@@ -231,41 +229,20 @@ namespace MatrixHelper
 
         #region operator overloads
 
-        public static Matrix operator +(Matrix a, Matrix b)
-        {
-            return Operations.Addition(a, b);
-        }
-        public static Matrix operator -(Matrix a, Matrix b)
-        {
-            return Operations.Subtraction(a, b);
-        }
-        public static Matrix operator *(float a, Matrix b)
-        {
-            return Operations.ProductWithAScalar(a, b);
-        }
-        public static Matrix operator *(Matrix b, float a)
-        {
-            return Operations.ProductWithAScalar(a, b);
-        }
-        public static Matrix operator /(float a, Matrix b)
-        {
-            return Operations.DivisionWithAScalar(a, b);
-        }
-        public static Matrix operator /(Matrix b, float a)
-        {
-            return Operations.DivisionWithAScalar(a, b);
-        }
-        public static Matrix operator *(Matrix a, Matrix b)
-        {
-            return Operations.ScalarProduct(a, b);
-        }
+        public static Matrix operator +(Matrix a, Matrix b) => Operations.Addition(a, b);
+        public static Matrix operator -(Matrix a, Matrix b)=> Operations.Subtraction(a, b);
+        public static Matrix operator *(float a, Matrix b) => Operations.ProductWithAScalar(a, b);
+        public static Matrix operator *(Matrix b, float a) => Operations.ProductWithAScalar(a, b);
+        public static Matrix operator /(float a, Matrix b) => Operations.DivisionWithAScalar(a, b);
+        public static Matrix operator /(Matrix b, float a) => Operations.DivisionWithAScalar(a, b);
+        public static Matrix operator *(Matrix a, Matrix b) => Operations.ScalarProduct(a, b);
         public static bool operator ==(Matrix a, Matrix b)
         {
-            if (object.ReferenceEquals(a, null) &&
-                object.ReferenceEquals(b, null))
+            if (ReferenceEquals(a, null) &&
+                ReferenceEquals(b, null))
                 return true;
-            else if (object.ReferenceEquals(a, null) ||
-                object.ReferenceEquals(b, null))
+            else if (ReferenceEquals(a, null) ||
+                ReferenceEquals(b, null))
                 return false;
 
             if (a.m == b.m && a.n == b.n)
@@ -290,6 +267,17 @@ namespace MatrixHelper
                     .Any(x => x == false);
             else
                 return true;
+        }
+        public override bool Equals(object obj)
+        {
+            // debugging/testing
+            return this == obj as Matrix;
+            // return base.Equals(obj);
+        }
+        public override int GetHashCode()
+        {
+            throw new NotImplementedException();
+            // return base.GetHashCode();
         }
 
         // Don't!?
