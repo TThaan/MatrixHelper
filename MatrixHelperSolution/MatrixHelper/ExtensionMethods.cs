@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace MatrixHelper
 {
@@ -54,6 +56,22 @@ namespace MatrixHelper
 
             return result;
         }
+        public static void Serialize(this Matrix matrix, string fileName) 
+        {
+            using (Stream stream = File.Open(fileName, FileMode.Create))
+            {
+                BinaryFormatter bf = new BinaryFormatter();
+                bf.Serialize(stream, matrix);
+            }
+        }
+        public static Matrix Deserialize(this Matrix matrix, string fileName)
+        {
+            using (Stream stream = File.Open(fileName, FileMode.Open))
+            {
+                BinaryFormatter bf = new BinaryFormatter();
+                return (Matrix)bf.Deserialize(stream);
+            }
+        }
         public static Matrix ForEach_New(this Matrix a, Func<float, float> func)
         {
             Matrix result = new Matrix(a.m, a.n);
@@ -103,7 +121,7 @@ namespace MatrixHelper
         }
         /// <summary>
         /// This func takes the value of matrix b[j,k] as parameter and 
-        /// its' return value becomes the new value of matrix a[j,k].
+        /// the funcs' return value becomes the new value of matrix a[j,k].
         /// </summary>
         public static Matrix ForEach(this Matrix result, Matrix b, Func<float, float> func)
         {
@@ -128,136 +146,137 @@ namespace MatrixHelper
             }
             return result;
         }
-        public static Matrix Subtract(this Matrix result, Matrix subtrhend)
-        {
-            for (int x = 0; x < result.n; x++)
-            {
-                for (int y = 0; y < result.m; y++)
-                {
-                    result[y, x] = result[y, x] - subtrhend[y, x];
-                }
-            }
-            return result;
-        }
-        public static Matrix Multiplicate(this Matrix result, float factor)
-        {
-            for (int x = 0; x < result.n; x++)
-            {
-                for (int y = 0; y < result.m; y++)
-                {
-                    result[y, x] = result[y, x] * factor;
-                }
-            }
-            return result;
-        }
-        public static Matrix Divide(this Matrix result, float divisor)
-        {
-            for (int x = 0; x < result.n; x++)
-            {
-                for (int y = 0; y < result.m; y++)
-                {
-                    result[y, x] = result[y, x] / divisor;
-                }
-            }
-            return result;
-        }
-        public static Matrix GetHadamardProduct(this Matrix result, Matrix b)
-        {
-            for (int x = 0; x < result.n; x++)
-            {
-                for (int y = 0; y < result.m; y++)
-                {
-                    result[y, x] = result[y, x] * b[y, x];
-                }
-            }
-            return result;
-        }
+        //public static Matrix Subtract(this Matrix result, Matrix subtrahend)
+        //{
+        //    for (int x = 0; x < result.n; x++)
+        //    {
+        //        for (int y = 0; y < result.m; y++)
+        //        {
+        //            result[y, x] = result[y, x] - subtrahend[y, x];
+        //        }
+        //    }
+        //    return result;
+        //}
+        //public static Matrix Multiplicate(this Matrix result, float factor)
+        //{
+        //    for (int x = 0; x < result.n; x++)
+        //    {
+        //        for (int y = 0; y < result.m; y++)
+        //        {
+        //            result[y, x] = result[y, x] * factor;
+        //        }
+        //    }
+        //    return result;
+        //}
+        //public static Matrix Divide(this Matrix result, float divisor)
+        //{
+        //    for (int x = 0; x < result.n; x++)
+        //    {
+        //        for (int y = 0; y < result.m; y++)
+        //        {
+        //            result[y, x] = result[y, x] / divisor;
+        //        }
+        //    }
+        //    return result;
+        //}
+        //public static Matrix GetHadamardProduct(this Matrix result, Matrix b)
+        //{
+        //    for (int x = 0; x < result.n; x++)
+        //    {
+        //        for (int y = 0; y < result.m; y++)
+        //        {
+        //            result[y, x] = result[y, x] * b[y, x];
+        //        }
+        //    }
+        //    return result;
+        //}
 
         #endregion
 
         #region returning a dedicated result matrix (independent from formula) and ignoring size checks
 
-        public static Matrix Add(this Matrix result, Matrix a, Matrix b)
-        {
-            for (int x = 0; x < result.n; x++)
-            {
-                for (int y = 0; y < result.m; y++)
-                {
-                    result[y, x] = a[y, x] + b[y, x];
-                }
-            }
-            return result;
-        }
-        public static Matrix Subtract(this Matrix result, Matrix a, Matrix subtrahend)
-        {
-            for (int x = 0; x < result.n; x++)
-            {
-                for (int y = 0; y < result.m; y++)
-                {
-                    result[y, x] = a[y, x] - subtrahend[y, x];
-                }
-            }
-            return result;
-        }
-        public static Matrix Multiplicate(this Matrix result, Matrix a, float factor)
-        {
-            for (int x = 0; x < result.n; x++)
-            {
-                for (int y = 0; y < result.m; y++)
-                {
-                    result[y, x] = a[y, x] * factor;
-                }
-            }
-            return result;
-        }
-        public static Matrix Divide(this Matrix result, Matrix a, float divisor)
-        {
-            for (int x = 0; x < result.n; x++)
-            {
-                for (int y = 0; y < result.m; y++)
-                {
-                    result[y, x] = a[y, x] / divisor;
-                }
-            }
-            return result;
-        }
-        public static Matrix GetHadamardProduct(this Matrix result, Matrix a, Matrix b)
-        {
-            for (int x = 0; x < result.n; x++)
-            {
-                for (int y = 0; y < result.m; y++)
-                {
-                    result[y, x] = a[y, x] * b[y, x];
-                }
-            }
-            return result;
-        }
-        public static Matrix GetScalarProduct(this Matrix result, Matrix a, Matrix b)
-        {
-            // Make sure the result has only 0 - values
-            result.ForEach(x => 0);
+        //public static Matrix Add(this Matrix result, Matrix a, Matrix b)
+        //{
+        //    for (int x = 0; x < result.n; x++)
+        //    {
+        //        for (int y = 0; y < result.m; y++)
+        //        {
+        //            result[y, x] = a[y, x] + b[y, x];
+        //        }
+        //    }
+        //    return result;
+        //}
+        //public static Matrix Subtract(this Matrix result, Matrix a, Matrix subtrahend)
+        //{
+        //    for (int x = 0; x < result.n; x++)
+        //    {
+        //        for (int y = 0; y < result.m; y++)
+        //        {
+        //            result[y, x] = a[y, x] - subtrahend[y, x];
+        //        }
+        //    }
+        //    return result;
+        //}
+        //public static Matrix Multiplicate(this Matrix result, Matrix a, float factor)
+        //{
+        //    for (int x = 0; x < result.n; x++)
+        //    {
+        //        for (int y = 0; y < result.m; y++)
+        //        {
+        //            result[y, x] = a[y, x] * factor;
+        //        }
+        //    }
+        //    return result;
+        //}
+        //public static Matrix Divide(this Matrix result, Matrix a, float divisor)
+        //{
+        //    for (int x = 0; x < result.n; x++)
+        //    {
+        //        for (int y = 0; y < result.m; y++)
+        //        {
+        //            result[y, x] = a[y, x] / divisor;
+        //        }
+        //    }
+        //    return result;
+        //}
+        //public static void SetHadamardProduct(this Matrix result, Matrix a, Matrix b)
+        //{
+        //    for (int x = 0; x < result.n; x++)
+        //    {
+        //        for (int y = 0; y < result.m; y++)
+        //        {
+        //            result[y, x] = a[y, x] * b[y, x];
+        //        }
+        //    }
+            
+        //    //return result;
+        //}
+        //public static void SetScalarProduct(this Matrix result, Matrix a, Matrix b)
+        //{
+        //    // Make sure the result has only 0 - values
+        //    // result.ForEach(x => 0);
 
-            // For each row of matrix 'a'
-            for (int y = 0; y < a.m; y++)
-            {
-                // you take each column of matrix 'b', 
-                for (int x = 0; x < b.n; x++)
-                {
-                    // iterate over each value of a's columns and b's rows (a.n=b.m)
-                    for (int z = 0; z < a.n; z++)
-                    {
-                        // make sure the result has only 0 - values
-                        //if (z == 0)
-                        //    result[y, x] = 0;
+        //    // For each row of matrix 'a'
+        //    for (int y = 0; y < a.m; y++)
+        //    {
+        //        // you take each column of matrix 'b', 
+        //        for (int x = 0; x < b.n; x++)
+        //        {
+        //            // iterate over each value of a's columns and b's rows (a.n=b.m)
+        //            for (int z = 0; z < a.n; z++)
+        //            {
+        //                // make sure the result has only 0 - values
+        //                //if (z == 0)
+        //                //    result[y, x] = 0;
 
-                        // and compute their scalar product
-                        result[y, x] += a[y, z] * b[z, x];
-                    }
-                }
-            }
+        //                // and compute their scalar product
+        //                result[y, x] += a[y, z] * b[z, x];
+        //            }
+        //        }
+        //    }
 
-            return result;
-        }
+        //    //return result;
+        //}
 
         #endregion
     }

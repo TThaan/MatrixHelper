@@ -5,6 +5,7 @@ using System.Linq;
 
 namespace MatrixHelper
 {
+    [Serializable]
     /// <summary>
     /// wa: Base class Matrix plus child class StoringMatrix incl fields transpose, rows and columns?
     /// wa: ByteMatrix incl binary operations?
@@ -73,6 +74,9 @@ namespace MatrixHelper
         /// </summary>
         public Matrix(Matrix matrix)
         {
+            m = matrix.m;
+            n = matrix.n;
+
             content = new float[matrix.m, matrix.n];            
 
             for (int j = 0; j < matrix.m; j++)
