@@ -134,7 +134,7 @@ namespace MatrixHelper
         /// <summary>
         /// Get the matrix's transpose once and store it for later reuse.
         /// </summary>
-        public Matrix Transpose => transpose ?? (transpose = GetTranspose());
+        // public Matrix Transpose => transpose ?? (transpose = GetTranspose());
         /// <summary>
         /// amount of rows
         /// </summary>
