@@ -10,9 +10,9 @@ namespace MatrixHelper
     /// </summary>
     public class Operations
     {
-        public static Matrix ProductWithAScalar(float a, Matrix b)
+        public static IMatrix ProductWithAScalar(float a, IMatrix b)
         {
-            Matrix result = new Matrix(b.m, b.n);
+            IMatrix result = new Matrix(b.m, b.n);
 
             for (int x = 0; x < b.n; x++)
             {
@@ -24,9 +24,23 @@ namespace MatrixHelper
 
             return result;
         }
-        public static Matrix DivisionWithAScalar(float a, Matrix b)
+        public static IMatrix ProductWithAScalar(IMatrix a, float b)
         {
-            Matrix result = new Matrix(b.m, b.n);
+            IMatrix result = new Matrix(a.m, a.n);
+
+            for (int x = 0; x < a.n; x++)
+            {
+                for (int y = 0; y < a.m; y++)
+                {
+                    result[y, x] = a[y, x] * b;
+                }
+            }
+
+            return result;
+        }
+        public static IMatrix DivisionOfScalarByMatrix(float a, IMatrix b)
+        {
+            IMatrix result = new Matrix(b.m, b.n);
 
             for (int x = 0; x < b.n; x++)
             {
@@ -38,16 +52,30 @@ namespace MatrixHelper
 
             return result;
         }
+        public static IMatrix DivisionOfMatrixByScalar(IMatrix a, float b)
+        {
+            IMatrix result = new Matrix(a.m, a.n);
+
+            for (int x = 0; x < a.n; x++)
+            {
+                for (int y = 0; y < a.m; y++)
+                {
+                    result[y, x] = a[y, x] / b;
+                }
+            }
+
+            return result;
+        }
         /// <summary>
         /// Condition: a.m = b.m & a.n = b.n.
         /// </summary>
         /// <returns></returns>
-        public static Matrix Addition(Matrix a, Matrix b)
+        public static IMatrix Addition(IMatrix a, IMatrix b)
         {
             if (a.m != b.m || a.n != b.n)
                 throw new ArgumentException("a.m must equal b.m and a.n must equal b.n");
 
-            Matrix result = new Matrix(b.m, b.n);
+            IMatrix result = new Matrix(b.m, b.n);
 
             for (int x = 0; x < b.n; x++)
             {
@@ -62,12 +90,12 @@ namespace MatrixHelper
         /// <summary>
         /// Condition: a.m = b.m & a.n = b.n.
         /// </summary>
-        public static Matrix Subtraction(Matrix a, Matrix b)
+        public static IMatrix Subtraction(IMatrix a, IMatrix b)
         {
             if (a.m != b.m || a.n != b.n)
                 throw new ArgumentException("a.m must equal b.m and a.n must equal b.n");
 
-            Matrix result = new Matrix(b.m, b.n);
+            IMatrix result = new Matrix(b.m, b.n);
 
             for (int x = 0; x < b.n; x++)
             {
@@ -83,12 +111,13 @@ namespace MatrixHelper
         /// Also called 'Dot Product' or 'Inner Product'.
         /// Condition: a.n = b.m
         /// </summary>
-        public static Matrix ScalarProduct(Matrix a, Matrix b)
+        
+        public static IMatrix ScalarProduct(IMatrix a, IMatrix b)
         {
             if (a.n != b.m)
                 throw new ArgumentException("a.n must equal b.m");
 
-            Matrix result = new Matrix(a.m, b.n);
+            IMatrix result = new Matrix(a.m, b.n);
 
             // For each row of matrix 'a'
             for (int y = 0; y < a.m; y++)
@@ -110,18 +139,18 @@ namespace MatrixHelper
         /// <summary>
         /// Also called 'Outer Product'.
         /// </summary>
-        public static Matrix KroneckerProduct(Matrix a, Matrix b)
+        public static IMatrix KroneckerProduct(IMatrix a, IMatrix b)
         {
             int m = a.m * b.m;
             int n = a.n * b.n;
 
-            Matrix result = new Matrix(m, n);
+            IMatrix result = new Matrix(m, n);
 
             for (int y = 0; y < a.m; y++)
             {
                 for (int x = 0; x < a.n; x++)
                 {
-                    Matrix tmpResult = a[y, x] * b;
+                    IMatrix tmpResult = a[y, x] * b;
                     for (int yy = 0; yy < b.m; yy++)
                     {
                         for (int xx = 0; xx < b.n; xx++)
@@ -141,12 +170,12 @@ namespace MatrixHelper
         /// Also called 'Elementwise Product' or 'Schur Product'. 
         /// Condition: a.m = b.m & a.n = b.n 
         /// </summary>
-        public static Matrix HadamardProduct(Matrix a, Matrix b)
+        public static IMatrix HadamardProduct(IMatrix a, IMatrix b)
         {
             if (a.m != b.m || a.n != b.n)
                 throw new ArgumentException("a.m must equal b.m and a.n must equal b.n");
 
-            Matrix result = new Matrix(b.m, b.n);
+            IMatrix result = new Matrix(b.m, b.n);
 
             for (int x = 0; x < b.n; x++)
             {

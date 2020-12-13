@@ -7,7 +7,11 @@ namespace MatrixHelper
 {
     public static class ExtensionMethods
     {
-        public static Matrix DumpToConsole(this Matrix a, string title)
+        public static IMatrix GetCopy(this IMatrix a)
+        {
+            return new Matrix(a);
+        }
+        public static IMatrix DumpToConsole(this IMatrix a, string title)
         {
             if (!string.IsNullOrEmpty(title))
             {
@@ -45,7 +49,7 @@ namespace MatrixHelper
 
             return a;
         }
-        public static List<float> ToList(this Matrix a)
+        public static List<float> ToList(this IMatrix a)
         {
             List<float> result = new List<float>(a.m * a.n);
 
@@ -56,7 +60,7 @@ namespace MatrixHelper
 
             return result;
         }
-        public static void Serialize(this Matrix matrix, string fileName) 
+        public static void Serialize(this IMatrix matrix, string fileName) 
         {
             using (Stream stream = File.Open(fileName, FileMode.Create))
             {
@@ -64,50 +68,18 @@ namespace MatrixHelper
                 bf.Serialize(stream, matrix);
             }
         }
-        public static Matrix Deserialize(this Matrix matrix, string fileName)
+        public static IMatrix Deserialize(this IMatrix matrix, string fileName)
         {
             using (Stream stream = File.Open(fileName, FileMode.Open))
             {
                 BinaryFormatter bf = new BinaryFormatter();
-                return (Matrix)bf.Deserialize(stream);
+                return (IMatrix)bf.Deserialize(stream);
             }
-        }
-        public static Matrix ForEach_New(this Matrix a, Func<float, float> func)
-        {
-            Matrix result = new Matrix(a.m, a.n);
-
-            for (int j = 0; j < a.m; j++)
-            {
-                for (int k = 0; k < a.n; k++)
-                {
-                    result[j,k]= func(a[j, k]);
-                }
-            }
-
-            return result;
-        }
-        /// <summary>
-        /// This func takes the value of matrix b[j,k] as parameter and 
-        /// its' return value becomes the new value of matrix a[j,k].
-        /// </summary>
-        public static Matrix ForEach_New(this Matrix a, Matrix b, Func<float, float> func)
-        {
-            Matrix result = new Matrix(a.m, a.n);
-
-            for (int j = 0; j < a.m; j++)
-            {
-                for (int k = 0; k < a.n; k++)
-                {
-                    result[j, k] = func(b[j, k]);
-                }
-            }
-
-            return result;
         }
 
         #region returning one of the matrices involved in the formula and ignoring size checks
 
-        public static Matrix ForEach(this Matrix result, Func<float, float> func)
+        public static IMatrix ForEach(this IMatrix result, Func<float, float> func)
         {
             for (int j = 0; j < result.m; j++)
             {
@@ -123,7 +95,7 @@ namespace MatrixHelper
         /// This func takes the value of matrix b[j,k] as parameter and 
         /// the funcs' return value becomes the new value of matrix a[j,k].
         /// </summary>
-        public static Matrix ForEach(this Matrix result, Matrix b, Func<float, float> func)
+        public static IMatrix ForEach(this IMatrix result, IMatrix b, Func<float, float> func)
         {
             for (int j = 0; j < result.m; j++)
             {
@@ -135,17 +107,17 @@ namespace MatrixHelper
 
             return result;
         }
-        public static Matrix Add(this Matrix result, Matrix addend)
-        {
-            for (int x = 0; x < result.n; x++)
-            {
-                for (int y = 0; y < result.m; y++)
-                {
-                    result[y, x] = result[y, x] + addend[y, x];
-                }
-            }
-            return result;
-        }
+        //public static Matrix Add(this Matrix result, Matrix addend)
+        //{
+        //    for (int x = 0; x < result.n; x++)
+        //    {
+        //        for (int y = 0; y < result.m; y++)
+        //        {
+        //            result[y, x] = result[y, x] + addend[y, x];
+        //        }
+        //    }
+        //    return result;
+        //}
         //public static Matrix Subtract(this Matrix result, Matrix subtrahend)
         //{
         //    for (int x = 0; x < result.n; x++)

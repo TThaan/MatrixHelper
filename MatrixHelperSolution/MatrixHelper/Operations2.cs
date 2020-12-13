@@ -4,7 +4,7 @@ using System.Text;
 
 namespace MatrixHelper
 {
-    public class Operations2
+    public class PerformantOperations
     {
         #region Just setting a dedicated result matrix without return ing it (independent from formula) and ignoring size checks
 

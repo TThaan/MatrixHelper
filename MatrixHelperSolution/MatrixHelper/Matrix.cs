@@ -5,12 +5,34 @@ using System.Linq;
 
 namespace MatrixHelper
 {
+    public interface IMatrix : IEnumerable<float>
+    {
+        float this[int y] { get; set; }
+        float this[int y, int x] { get; set; }
+        int m { get; }
+        int n { get; }
+        float[][] Rows { get; }
+        float[][] Columns { get; }
+
+        bool IsEqualTo(IMatrix a);
+        bool IsIdenticalTo(IMatrix a);
+        public IEnumerator<float> GetEnumerator();
+
+        public static IMatrix operator +(IMatrix a, IMatrix b) => Operations.Addition(a, b);
+        public static IMatrix operator -(IMatrix a, IMatrix b) => Operations.Subtraction(a, b);
+        public static IMatrix operator *(IMatrix a, IMatrix b) => Operations.HadamardProduct(a, b);
+        public static IMatrix operator *(IMatrix a, float b) => Operations.ProductWithAScalar(a, b);
+        public static IMatrix operator *(float a, IMatrix b) => Operations.ProductWithAScalar(a, b);
+        public static IMatrix operator /(IMatrix a, IMatrix b) => Operations.HadamardProduct(a, 1/b);
+        public static IMatrix operator /(float a, IMatrix b) => Operations.DivisionOfScalarByMatrix(a, b);
+    }
+
     [Serializable]
     /// <summary>
     /// wa: Base class Matrix plus child class StoringMatrix incl fields transpose, rows and columns?
     /// wa: ByteMatrix incl binary operations?
     /// </summary>
-    public class Matrix : IEnumerable<float>    // IMatrix, 
+    public class Matrix : IMatrix, IEnumerable<float> 
     {
         #region fields
 
@@ -72,7 +94,7 @@ namespace MatrixHelper
         /// <summary>
         /// Copy Constructor
         /// </summary>
-        public Matrix(Matrix matrix)
+        public Matrix(IMatrix matrix)
         {
             m = matrix.m;
             n = matrix.n;
@@ -233,13 +255,13 @@ namespace MatrixHelper
 
         #region operator overloads
 
-        public static Matrix operator +(Matrix a, Matrix b) => Operations.Addition(a, b);
-        public static Matrix operator -(Matrix a, Matrix b)=> Operations.Subtraction(a, b);
-        public static Matrix operator *(float a, Matrix b) => Operations.ProductWithAScalar(a, b);
-        public static Matrix operator *(Matrix b, float a) => Operations.ProductWithAScalar(a, b);
-        public static Matrix operator /(float a, Matrix b) => Operations.DivisionWithAScalar(a, b);
-        public static Matrix operator /(Matrix b, float a) => Operations.DivisionWithAScalar(a, b);
-        public static Matrix operator *(Matrix a, Matrix b) => Operations.ScalarProduct(a, b);
+        // public static Matrix operator +(Matrix a, Matrix b) => Operations.Addition(a, b);
+        // public static Matrix operator -(Matrix a, Matrix b)=> Operations.Subtraction(a, b);
+        // public static Matrix operator *(float a, Matrix b) => Operations.ProductWithAScalar(a, b);
+        // public static Matrix operator *(Matrix b, float a) => Operations.ProductWithAScalar(a, b);
+        // public static Matrix operator /(float a, Matrix b) => Operations.DivisionOfScalarByMatrix(a, b);
+        // public static Matrix operator /(Matrix b, float a) => Operations.DivisionOfScalarByMatrix(a, b);
+        // public static Matrix operator *(Matrix a, Matrix b) => Operations.ScalarProduct(a, b);
         public static bool operator ==(Matrix a, Matrix b)
         {
             if (ReferenceEquals(a, null) &&
@@ -282,6 +304,16 @@ namespace MatrixHelper
         {
             throw new NotImplementedException();
             // return base.GetHashCode();
+        }
+
+        public bool IsEqualTo(IMatrix a)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool IsIdenticalTo(IMatrix a)
+        {
+            throw new NotImplementedException();
         }
 
         // Don't!?
