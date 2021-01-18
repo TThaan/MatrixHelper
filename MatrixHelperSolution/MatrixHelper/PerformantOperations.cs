@@ -8,7 +8,7 @@ namespace MatrixHelper
     {
         #region Just setting a dedicated result matrix without return ing it (independent from formula) and ignoring size checks
 
-        public static void Add(Matrix a, Matrix b, Matrix result)
+        public static void Add(IMatrix a, IMatrix b, IMatrix result)
         {
             for (int x = 0; x < result.n; x++)
             {
@@ -18,7 +18,7 @@ namespace MatrixHelper
                 }
             }
         }
-        public static void Subtract(Matrix a, Matrix subtrahend, Matrix result)
+        public static void Subtract(IMatrix a, IMatrix subtrahend, IMatrix result)
         {
             for (int x = 0; x < result.n; x++)
             {
@@ -28,7 +28,7 @@ namespace MatrixHelper
                 }
             }
         }
-        public static void Multiplicate(Matrix a, float factor, Matrix result)
+        public static void Multiplicate(IMatrix a, float factor, IMatrix result)
         {
             for (int x = 0; x < result.n; x++)
             {
@@ -38,7 +38,7 @@ namespace MatrixHelper
                 }
             }
         }
-        public static void Divide(Matrix a, float divisor, Matrix result)
+        public static void Divide(IMatrix a, float divisor, IMatrix result)
         {
             for (int x = 0; x < result.n; x++)
             {
@@ -48,7 +48,7 @@ namespace MatrixHelper
                 }
             }
         }
-        public static void SetHadamardProduct(Matrix a, Matrix b, Matrix result)
+        public static void SetHadamardProduct(IMatrix a, IMatrix b, IMatrix result)
         {
             for (int x = 0; x < result.n; x++)
             {
@@ -58,7 +58,7 @@ namespace MatrixHelper
                 }
             }
         }
-        public static void SetScalarProduct(Matrix a, Matrix b, Matrix result)
+        public static void SetScalarProduct(IMatrix a, IMatrix b, IMatrix result)
         {
             // Make sure the result has only 0 - values
             result.ForEach(x => 0);

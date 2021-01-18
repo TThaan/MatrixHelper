@@ -1,12 +1,15 @@
-﻿using System;
+﻿using CustomLogger;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace MatrixHelper
 {
-    public interface IMatrix : IEnumerable<float>
+    public interface IMatrix : IEnumerable<float>, ILoggable
     {
+        // string Name { get; set; }    // for logging?
         float this[int y] { get; set; }
         float this[int y, int x] { get; set; }
         int m { get; }
@@ -16,7 +19,8 @@ namespace MatrixHelper
 
         bool IsEqualTo(IMatrix a);
         bool IsIdenticalTo(IMatrix a);
-        public IEnumerator<float> GetEnumerator();
+
+        IMatrix GetTranspose();
 
         public static IMatrix operator +(IMatrix a, IMatrix b) => Operations.Addition(a, b);
         public static IMatrix operator -(IMatrix a, IMatrix b) => Operations.Subtraction(a, b);
@@ -38,7 +42,6 @@ namespace MatrixHelper
 
         float[,] content;
         int _m, _n;
-        Matrix transpose;
 
         #endregion
 
@@ -219,7 +222,7 @@ namespace MatrixHelper
         /// <summary>
         /// Get the matrix's transpose without storing it.
         /// </summary>
-        public Matrix GetTranspose()
+        public IMatrix GetTranspose()
         {
             float[,] result = new float[n, m];
             for (int x = 0; x < m; x++)
@@ -332,6 +335,93 @@ namespace MatrixHelper
                 );
         }
 
+        #endregion
+
+        #region ILoggable
+
+        public event LogChangedEventHandler LogChanged;
+        void OnLogChanged(FormattingStyle formattingStyle = default, [CallerMemberName] string propertyName = null)
+        {
+            LogChanged?.Invoke(this, new LogChangedEventArgs(propertyName));
+        }
+        public string ToLog(string propertyName)
+        {
+            string log = "\n";
+
+            if (!string.IsNullOrEmpty(propertyName))
+            {
+                log += propertyName;
+            }
+
+            log += "\n-";
+            for (int i = 0; i < n; i++)
+            {
+                log += "----------------";
+            }
+            log += "\n";
+
+            for (int j = 0; j < m; j++)
+            {
+                if (n == 1)
+                {
+                    log += string.Format("|{0, 15}", this[j]);
+                }
+                else
+                {
+                    for (int k = 0; k < n; k++)
+                    {
+                        log += string.Format("|{0, 15}", this[j, k]);
+                    }
+                }
+                log += "|\n";
+            }
+
+            log += "-";
+            for (int i = 0; i < n; i++)
+            {
+                log += "----------------";
+            }
+
+            return log;
+        }
+
+        //public void ToLog(string propertyName)
+        //{
+        //    if (!string.IsNullOrEmpty(propertyName))
+        //    {
+        //        Console.WriteLine(propertyName);
+        //    }
+
+        //    Console.Write(" ");
+        //    for (int i = 0; i < n; i++)
+        //    {
+        //        Console.Write("----------------");
+        //    }
+        //    Console.WriteLine();
+
+        //    for (int j = 0; j < m; j++)
+        //    {
+        //        if (n == 1)
+        //        {
+        //            Console.Write(string.Format("|{0, 15}", this[j]));
+        //        }
+        //        else
+        //        {
+        //            for (int k = 0; k < n; k++)
+        //            {
+        //                Console.Write(string.Format("|{0, 15}", this[j, k]));
+        //            }
+        //        }
+        //        Console.WriteLine("|");
+        //    }
+
+        //    Console.Write(" ");
+        //    for (int i = 0; i < n; i++)
+        //    {
+        //        Console.Write("----------------");
+        //    }
+        //}
+        
         #endregion
     }
 }

@@ -191,13 +191,13 @@ namespace MatrixHelper
         /// Identic derivation for each dScalar/db_jk.
         /// </summary>
         
-        public static float TotalSum(Matrix a)
+        public static float TotalSum(IMatrix a)
         {
             return a.Sum();
         }
-        public static Matrix FlattenToOneColumn(Matrix a)
+        public static IMatrix FlattenToOneColumn(IMatrix a)
         {
-            Matrix result = new Matrix((int)a.LongCount());
+            IMatrix result = new Matrix((int)a.LongCount());
 
             int i = 0;
             foreach (var item in a)

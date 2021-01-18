@@ -4,4 +4,10 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Reference Include="CustomLogger">
+      <HintPath>..\..\..\CustomLogger\CustomLoggerSolution\CustomLogger\bin\Debug\netcoreapp3.1\CustomLogger.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>
