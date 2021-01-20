@@ -13,8 +13,16 @@ namespace MatrixHelper
             {
                 return null;
             }
-            return new Matrix(a); 
+            return new Matrix(a, default);
         }
+        //public static IMatrix GetCopy(this IMatrix a, string newName, ILogger logger = null)
+        //{
+        //    if (a == null)
+        //    {
+        //        return null;
+        //    }
+        //    return new Matrix(a, newName, logger);
+        //}
         // Rename to generic "SpecificLog()" to make use of it in ILoggable interface
         // and make it an instance in Matrix class (as ILoggable implementation)!
         public static IMatrix DumpToConsole(this IMatrix a, string title)

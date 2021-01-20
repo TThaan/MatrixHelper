@@ -3,13 +3,15 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 
 namespace MatrixHelper
 {
-    public interface IMatrix : IEnumerable<float>, ILoggable
+    public interface IMatrixChanged
     {
-        // string Name { get; set; }    // for logging?
+        event MatrixChangedEventHandler MatrixChanged;
+    }
+    public interface IMatrix : IEnumerable<float>, IMatrixChanged, ILoggable
+    {
         float this[int y] { get; set; }
         float this[int y, int x] { get; set; }
         int m { get; }
@@ -29,6 +31,8 @@ namespace MatrixHelper
         public static IMatrix operator *(float a, IMatrix b) => Operations.ProductWithAScalar(a, b);
         public static IMatrix operator /(IMatrix a, IMatrix b) => Operations.HadamardProduct(a, 1/b);
         public static IMatrix operator /(float a, IMatrix b) => Operations.DivisionOfScalarByMatrix(a, b);
+
+        // void Log(string info = default, Display display = default);
     }
 
     [Serializable]
@@ -45,13 +49,18 @@ namespace MatrixHelper
 
         #endregion
 
-        #region ctor
+        #region ctors
 
+        public Matrix(string name)
+        {
+            LoggableName = name;
+        }
         /// <summary>
         /// </summary>
         /// <param name="m">amount of rows</param>
         /// <param name="n">amount of columns</param>
-        public Matrix(int m, int n)
+        public Matrix(int m, int n, string name = default)
+            :this(name)
         {
             this.m = m;
             this.n = n;
@@ -61,7 +70,8 @@ namespace MatrixHelper
         /// <summary>
         /// </summary>
         /// <param name="m">amount of rows</param>
-        public Matrix(int m)
+        public Matrix(int m, string name = default)
+            : this(name)
         {
             this.m = m;
             n = 1;
@@ -72,7 +82,8 @@ namespace MatrixHelper
         /// first dimension = m = y = height
         /// </summary>
         /// <param name="array"></param>
-        public Matrix(float[] array)
+        public Matrix(float[] array, string name = default)
+            : this(name)
         {
             m = array.Length;
             n = 1;
@@ -87,7 +98,8 @@ namespace MatrixHelper
         /// First dimension = m = y = height!
         /// </summary>
         /// <param name="array"></param>
-        public Matrix(float[,] array)
+        public Matrix(float[,] array, string name = default)
+            : this(name)
         {
             content = array;
 
@@ -97,7 +109,8 @@ namespace MatrixHelper
         /// <summary>
         /// Copy Constructor
         /// </summary>
-        public Matrix(IMatrix matrix)
+        public Matrix(IMatrix matrix, string name = default)
+            : this(name)
         {
             m = matrix.m;
             n = matrix.n;
@@ -132,6 +145,7 @@ namespace MatrixHelper
                     throw new ArgumentException("This matrix has no second dimension and cannot process 'x'.");
 
                 content[y, x] = value;
+                OnMatrixChanged();
             }
         }
         public float this[int y]
@@ -149,6 +163,7 @@ namespace MatrixHelper
                     throw new ArgumentException("This matrix has a second dimension and needs it's value 'x'.");
 
                 content[y, 0] = value;
+                OnMatrixChanged();
             }
         }
 
@@ -337,20 +352,26 @@ namespace MatrixHelper
 
         #endregion
 
+        #region IMatrixChanged
+
+        public event MatrixChangedEventHandler MatrixChanged;
+        void OnMatrixChanged()
+        {
+            MatrixChanged?.Invoke(this, new MatrixChangedEventArgs(LoggableName));
+        }
+
+        #endregion
+
         #region ILoggable
 
-        public event LogChangedEventHandler LogChanged;
-        void OnLogChanged(FormattingStyle formattingStyle = default, [CallerMemberName] string propertyName = null)
-        {
-            LogChanged?.Invoke(this, new LogChangedEventArgs(propertyName));
-        }
-        public string ToLog(string propertyName)
+        public string LoggableName { get; set; } = "Unnamed Matrix";
+        public string ToLog()
         {
             string log = "\n";
 
-            if (!string.IsNullOrEmpty(propertyName))
+            if (!string.IsNullOrEmpty(LoggableName))
             {
-                log += propertyName;
+                log += LoggableName;
             }
 
             log += "\n-";
