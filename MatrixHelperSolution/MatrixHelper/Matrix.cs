@@ -31,8 +31,6 @@ namespace MatrixHelper
         public static IMatrix operator *(float a, IMatrix b) => Operations.ProductWithAScalar(a, b);
         public static IMatrix operator /(IMatrix a, IMatrix b) => Operations.HadamardProduct(a, 1/b);
         public static IMatrix operator /(float a, IMatrix b) => Operations.DivisionOfScalarByMatrix(a, b);
-
-        // void Log(string info = default, Display display = default);
     }
 
     [Serializable]
@@ -42,18 +40,15 @@ namespace MatrixHelper
     /// </summary>
     public class Matrix : IMatrix, IEnumerable<float> 
     {
-        #region fields
+        #region fields & ctors
 
         float[,] content;
         int _m, _n;
 
-        #endregion
-
-        #region ctors
-
         public Matrix(string name)
         {
-            LoggableName = name;
+            if (!string.IsNullOrEmpty(name))
+                LoggableName = name;
         }
         /// <summary>
         /// </summary>
@@ -172,10 +167,6 @@ namespace MatrixHelper
         #region IMatrix
 
         /// <summary>
-        /// Get the matrix's transpose once and store it for later reuse.
-        /// </summary>
-        // public Matrix Transpose => transpose ?? (transpose = GetTranspose());
-        /// <summary>
         /// amount of rows
         /// </summary>
         public int m 
@@ -191,6 +182,7 @@ namespace MatrixHelper
             get { return _n; }
             private set { _n = value; }
         }
+
         // Better GetRows as method to indicate it's an (effortful) action not a stored value?
         public float[][] Rows
         {
@@ -233,7 +225,6 @@ namespace MatrixHelper
                 return result;
             }
         }
-
         /// <summary>
         /// Get the matrix's transpose without storing it.
         /// </summary>
@@ -252,34 +243,8 @@ namespace MatrixHelper
 
         #endregion
 
-        #region IEnumerable<float>
-
-        public IEnumerator<float> GetEnumerator()
-        {
-            for (int y = 0; y < m; y++)
-            {
-                for (int x = 0; x < n; x++)
-                {
-                    yield return content[y, x];
-                }
-            }
-        }
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
-
-        #endregion
-
         #region operator overloads
 
-        // public static Matrix operator +(Matrix a, Matrix b) => Operations.Addition(a, b);
-        // public static Matrix operator -(Matrix a, Matrix b)=> Operations.Subtraction(a, b);
-        // public static Matrix operator *(float a, Matrix b) => Operations.ProductWithAScalar(a, b);
-        // public static Matrix operator *(Matrix b, float a) => Operations.ProductWithAScalar(a, b);
-        // public static Matrix operator /(float a, Matrix b) => Operations.DivisionOfScalarByMatrix(a, b);
-        // public static Matrix operator /(Matrix b, float a) => Operations.DivisionOfScalarByMatrix(a, b);
-        // public static Matrix operator *(Matrix a, Matrix b) => Operations.ScalarProduct(a, b);
         public static bool operator ==(Matrix a, Matrix b)
         {
             if (ReferenceEquals(a, null) &&
@@ -352,6 +317,25 @@ namespace MatrixHelper
 
         #endregion
 
+        #region IEnumerable<float>
+
+        public IEnumerator<float> GetEnumerator()
+        {
+            for (int y = 0; y < m; y++)
+            {
+                for (int x = 0; x < n; x++)
+                {
+                    yield return content[y, x];
+                }
+            }
+        }
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        #endregion
+
         #region IMatrixChanged
 
         public event MatrixChangedEventHandler MatrixChanged;
@@ -364,17 +348,17 @@ namespace MatrixHelper
 
         #region ILoggable
 
-        public string LoggableName { get; set; } = "Unnamed Matrix";
+        public string LoggableName { get; private set; } = "Matrix";
         public string ToLog()
         {
-            string log = "\n";
+            string log = "";
 
             if (!string.IsNullOrEmpty(LoggableName))
             {
-                log += LoggableName;
+                log += LoggableName + "\n";
             }
 
-            log += "\n-";
+            log += "-";
             for (int i = 0; i < n; i++)
             {
                 log += "----------------";
@@ -403,45 +387,8 @@ namespace MatrixHelper
                 log += "----------------";
             }
 
-            return log;
+            return $"{log}\n";
         }
-
-        //public void ToLog(string propertyName)
-        //{
-        //    if (!string.IsNullOrEmpty(propertyName))
-        //    {
-        //        Console.WriteLine(propertyName);
-        //    }
-
-        //    Console.Write(" ");
-        //    for (int i = 0; i < n; i++)
-        //    {
-        //        Console.Write("----------------");
-        //    }
-        //    Console.WriteLine();
-
-        //    for (int j = 0; j < m; j++)
-        //    {
-        //        if (n == 1)
-        //        {
-        //            Console.Write(string.Format("|{0, 15}", this[j]));
-        //        }
-        //        else
-        //        {
-        //            for (int k = 0; k < n; k++)
-        //            {
-        //                Console.Write(string.Format("|{0, 15}", this[j, k]));
-        //            }
-        //        }
-        //        Console.WriteLine("|");
-        //    }
-
-        //    Console.Write(" ");
-        //    for (int i = 0; i < n; i++)
-        //    {
-        //        Console.Write("----------------");
-        //    }
-        //}
         
         #endregion
     }

@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace MatrixHelper
+﻿namespace MatrixHelper
 {
     public class PerformantOperations
     {
-        #region Just setting a dedicated result matrix without return ing it (independent from formula) and ignoring size checks
+        #region Set values of an injected result matrix without returning it and ignoring size checks
 
         public static void Add(IMatrix a, IMatrix b, IMatrix result)
         {
@@ -61,7 +57,7 @@ namespace MatrixHelper
         public static void SetScalarProduct(IMatrix a, IMatrix b, IMatrix result)
         {
             // Make sure the result has only 0 - values
-            result.ForEach(x => 0);
+            // result.ForEach(x => 0);
 
             // For each row of matrix 'a'
             for (int y = 0; y < a.m; y++)
@@ -72,11 +68,11 @@ namespace MatrixHelper
                     // iterate over each value of a's columns and b's rows (a.n=b.m)
                     for (int z = 0; z < a.n; z++)
                     {
-                        // make sure the result has only 0 - values
-                        //if (z == 0)
-                        //    result[y, x] = 0;
+                        // (Make sure the result starts with each cell = 0.)
+                        if (z == 0)
+                            result[y, x] = 0;
 
-                        // and compute their scalar product
+                        // and compute their scalar product.
                         result[y, x] += a[y, z] * b[z, x];
                     }
                 }
