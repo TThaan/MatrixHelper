@@ -10,7 +10,7 @@ namespace MatrixHelper
     {
         event MatrixChangedEventHandler MatrixChanged;
     }
-    public interface IMatrix : IEnumerable<float>, IMatrixChanged, ILoggable
+    public interface IMatrix : IEnumerable<float>, IEquatable<IMatrix>, IMatrixChanged, ILoggable
     {
         float this[int y] { get; set; }
         float this[int y, int x] { get; set; }
@@ -20,7 +20,7 @@ namespace MatrixHelper
         float[][] Columns { get; }
 
         bool IsEqualTo(IMatrix a);
-        bool IsIdenticalTo(IMatrix a);
+        // bool IsIdenticalTo(IMatrix a);
 
         IMatrix GetTranspose();
 
@@ -243,61 +243,104 @@ namespace MatrixHelper
 
         #endregion
 
-        #region operator overloads
+        #region Equality incl IEquatable<IMatrix>
 
-        public static bool operator ==(Matrix a, Matrix b)
+        public bool Equals(IMatrix other)
         {
-            if (ReferenceEquals(a, null) &&
-                ReferenceEquals(b, null))
-                return true;
-            else if (ReferenceEquals(a, null) ||
-                ReferenceEquals(b, null))
-                return false;
-
-            if (a.m == b.m && a.n == b.n)
-                return a
-                    .Select((x, index) => x == b.ElementAt(index))
+            if (ReferenceEquals(other, null)) return false;
+            if (m == other.m && n == other.n) return this
+                    .Select((x, index) => x == other.ElementAt(index))
                     .All(x => x == true);
-            else 
-                return false;
-        }
-        public static bool operator !=(Matrix a, Matrix b)
-        {
-            if (object.ReferenceEquals(a, null) &&
-                object.ReferenceEquals(b, null))
-                return false;
-            else if (object.ReferenceEquals(a, null) ||
-                object.ReferenceEquals(b, null))
-                return true;
-
-            if (a.m == b.m && a.n == b.n)
-                return a
-                    .Select((x, index) => x == b.ElementAt(index))
-                    .Any(x => x == false);
-            else
-                return true;
+            else return false;
         }
         public override bool Equals(object obj)
         {
-            // debugging/testing
-            return this == obj as Matrix;
-            // return base.Equals(obj);
-        }
-        public override int GetHashCode()
-        {
-            throw new NotImplementedException();
-            // return base.GetHashCode();
+            if (ReferenceEquals(obj, null)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != GetType()) return false;
+            return Equals(obj as IMatrix);
         }
 
+        public static bool operator ==(Matrix a, object b)
+        {
+            Matrix bAsMatrix = b as Matrix;
+
+            if (bAsMatrix != null)
+            {
+                return a == bAsMatrix;
+            }
+
+            float[,] jagArr = b as float[,];
+            if (jagArr != null)
+            {
+                bAsMatrix = new Matrix(jagArr);
+            }
+
+            float[] arr = b as float[];
+            if (arr != null)
+            {
+                bAsMatrix = new Matrix(arr);
+            }
+
+            return a == bAsMatrix;
+        }
+        public static bool operator !=(Matrix a, object b)
+        {
+            Matrix bAsMatrix = b as Matrix;
+
+            if (bAsMatrix != null)
+            {
+                return a != bAsMatrix;
+            }
+
+            float[,] jagArr = b as float[,];
+            if (jagArr != null)
+            {
+                bAsMatrix = new Matrix(jagArr);
+            }
+
+            float[] arr = b as float[];
+            if (arr != null)
+            {
+                bAsMatrix = new Matrix(arr);
+            }
+
+            return a != bAsMatrix;
+        }
+        public static bool operator ==(Matrix a, Matrix b)
+        {
+            if (ReferenceEquals(a, null) && ReferenceEquals(b, null))
+                return true;
+            else if (ReferenceEquals(a, null) || ReferenceEquals(b, null))
+                return false;
+            if (a.m == b.m && a.n == b.n) return a
+                    .Select((x, index) => x == b.ElementAt(index))
+                    .All(x => x == true);
+            else return false;
+        }
+        public static bool operator !=(Matrix a, Matrix b)
+        {
+            if (ReferenceEquals(a, null) && ReferenceEquals(b, null))
+                return false;
+            else if (ReferenceEquals(a, null) || ReferenceEquals(b, null))
+                return true;
+            if (a.m == b.m && a.n == b.n) return a
+                    .Select((x, index) => x == b.ElementAt(index))
+                    .Any(x => x == false);
+            else return true;
+        }
+        /// <summary>
+        /// Used as substitute for ==. Redundant?
+        /// </summary>
         public bool IsEqualTo(IMatrix a)
         {
             throw new NotImplementedException();
         }
 
-        public bool IsIdenticalTo(IMatrix a)
-        {
-            throw new NotImplementedException();
-        }
+        #endregion
+
+        #region other/unused operator overloads
+
 
         // Don't!?
         public static Matrix operator %(Matrix a, Matrix b)

@@ -1,12 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 
 namespace MatrixHelper
 {
     public static class ExtensionMethods
     {
+        public static float TotalSum(this IMatrix a)
+        {
+            return a.Sum();
+        }
         public static IMatrix GetCopy(this IMatrix a, string newLoggableName = default)
         {
             if (a == null)

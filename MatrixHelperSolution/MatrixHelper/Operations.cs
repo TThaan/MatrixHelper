@@ -187,10 +187,6 @@ namespace MatrixHelper
 
             return result;
         }
-        public static float TotalSum(IMatrix a)
-        {
-            return a.Sum();
-        }
         public static IMatrix FlattenToOneColumn(IMatrix a)
         {
             IMatrix result = new Matrix((int)a.LongCount());
