@@ -56,7 +56,14 @@ namespace MatrixHelper
             {
                 for (int k = 0; k < result.n; k++)
                 {
-                    result[j, k] = func(result[j, k]);
+                    if (result.n == 1)
+                    {
+                        result[j] = func(result[j]);
+                    }
+                    else
+                    {
+                        result[j, k] = func(result[j, k]);
+                    }
                 }
             }
 

@@ -14,6 +14,7 @@ namespace MatrixHelper
     {
         float this[int y] { get; set; }
         float this[int y, int x] { get; set; }
+        int Length { get; }
         int m { get; }
         int n { get; }
         float[][] Rows { get; }
@@ -31,6 +32,9 @@ namespace MatrixHelper
         public static IMatrix operator *(float a, IMatrix b) => Operations.ProductWithAScalar(a, b);
         public static IMatrix operator /(IMatrix a, IMatrix b) => Operations.HadamardProduct(a, 1/b);
         public static IMatrix operator /(float a, IMatrix b) => Operations.DivisionOfScalarByMatrix(a, b);
+
+        float[,] content { get; set; }
+        float[] content_1d { get; set; }
     }
 
     [Serializable]
@@ -38,11 +42,13 @@ namespace MatrixHelper
     /// wa: Base class Matrix plus child class StoringMatrix incl fields transpose, rows and columns?
     /// wa: ByteMatrix incl binary operations?
     /// </summary>
-    public class Matrix : IMatrix, IEnumerable<float> 
+    public class Matrix : IMatrix, IEnumerable<float>
     {
         #region fields & ctors
 
-        float[,] content;
+        public float[,] content { get; set; }
+        public float[] content_1d { get; set; }
+
         int _m, _n;
 
         public Matrix(string name)
@@ -61,6 +67,7 @@ namespace MatrixHelper
             this.n = n;
 
             content = new float[m, n];
+            Length = m * n;
         }
         /// <summary>
         /// </summary>
@@ -71,23 +78,38 @@ namespace MatrixHelper
             this.m = m;
             n = 1;
 
-            content = new float[m, n];
+            content_1d = new float[m];
+            Length = m;
         }
         /// <summary>
         /// first dimension = m = y = height
         /// </summary>
         /// <param name="array"></param>
+        //public Matrix(float[] array, string name = default)
+        //    : this(name)
+        //{
+        //    m = array.Length;
+        //    n = 1;
+        //    content = new float[m, n];
+
+        //    for (int j = 0; j < m; j++)
+        //    {
+        //        content[j,0] = array[j];
+        //    }
+        //    Length = m * n;
+        //}
         public Matrix(float[] array, string name = default)
             : this(name)
         {
             m = array.Length;
             n = 1;
-            content = new float[m, n];
+            content_1d = new float[m];
 
             for (int j = 0; j < m; j++)
             {
-                content[j,0] = array[j];
+                content_1d[j] = array[j];
             }
+            Length = m;
         }
         /// <summary>
         /// First dimension = m = y = height!
@@ -100,6 +122,7 @@ namespace MatrixHelper
 
             m = array.GetLength(0);
             n = array.GetLength(1);
+            Length = m * n;
         }
         /// <summary>
         /// Copy Constructor
@@ -110,15 +133,29 @@ namespace MatrixHelper
             m = matrix.m;
             n = matrix.n;
 
-            content = new float[matrix.m, matrix.n];            
-
-            for (int j = 0; j < matrix.m; j++)
+            if (n == 1)
             {
-                for (int k = 0; k < matrix.n; k++)
+                content_1d = new float[matrix.m];
+
+                for (int j = 0; j < matrix.m; j++)
                 {
-                    content[j, k] = matrix[j, k];
+                    content_1d[j] = matrix[j];
                 }
             }
+            else
+            {
+                content = new float[matrix.m, matrix.n];
+
+                for (int j = 0; j < matrix.m; j++)
+                {
+                    for (int k = 0; k < matrix.n; k++)
+                    {
+                        content[j, k] = matrix[j, k];
+                    }
+                }
+            }
+            
+            Length = m * n;
         }
 
         #endregion
@@ -129,36 +166,42 @@ namespace MatrixHelper
         {
             get
             {
-                if (n == 1 && x > 0)
-                    throw new ArgumentException("This matrix has no second dimension and cannot process 'x'.");
-
-                return content[y, x];
+                // if (n == 1 && x > 0)
+                //     throw new ArgumentException("This matrix has no second dimension and cannot process 'x'.");
+                if (n == 1)
+                    return content_1d[y];
+                else
+                    return content[y, x];
             }
             set
             {
-                if (n == 1 && x > 0)
-                    throw new ArgumentException("This matrix has no second dimension and cannot process 'x'.");
-
-                content[y, x] = value;
-                OnMatrixChanged();
+                // if (n == 1 && x > 0)
+                //     throw new ArgumentException("This matrix has no second dimension and cannot process 'x'.");
+                if (n == 1)
+                    content_1d[y] = value;
+                else
+                    content[y, x] = value;
+                // OnMatrixChanged();
             }
         }
         public float this[int y]
         {
             get
             {
-                if (n > 1)
-                    throw new ArgumentException("This matrix has a second dimension and needs it's value 'x'.");
+                // if (n > 1)
+                //     throw new ArgumentException("This matrix has a second dimension and needs it's value 'x'.");
 
-                return content[y, 0]; 
+                // return content[y, 0]; 
+                return content_1d[y];
             }
             set
             {
-                if (n > 1)
-                    throw new ArgumentException("This matrix has a second dimension and needs it's value 'x'.");
+                // if (n > 1)
+                //     throw new ArgumentException("This matrix has a second dimension and needs it's value 'x'.");
 
-                content[y, 0] = value;
-                OnMatrixChanged();
+                // content[y, 0] = value;
+                content_1d[y] = value;
+                // OnMatrixChanged();
             }
         }
 
@@ -166,6 +209,7 @@ namespace MatrixHelper
 
         #region IMatrix
 
+        public int Length { get; private set; }
         /// <summary>
         /// amount of rows
         /// </summary>
@@ -183,7 +227,7 @@ namespace MatrixHelper
             private set { _n = value; }
         }
 
-        // Better GetRows as method to indicate it's an (effortful) action not a stored value?
+        // Better 'GetRows()' as method to indicate it's an (effortful) action not a stored value?
         public float[][] Rows
         {
             get
@@ -204,7 +248,7 @@ namespace MatrixHelper
                 return result;
             }
         }
-        // Better GetColumns as method to indicate it's an (effortful) action not a stored value?
+        // Better 'GetColumns()' as method to indicate it's an (effortful) action not a stored value?
         public float[][] Columns
         {
             get
@@ -227,6 +271,9 @@ namespace MatrixHelper
         }
         /// <summary>
         /// Get the matrix's transpose without storing it.
+        /// 
+        /// Currently content_1d is defined as row vector. 
+        /// Thus its transpose cannot be a matrix (vector) with a content_1d but an m x n matrix!
         /// </summary>
         public IMatrix GetTranspose()
         {
@@ -235,6 +282,12 @@ namespace MatrixHelper
             {
                 for (int y = 0; y < n; y++)
                 {
+                    if (n == 1)
+                    {
+                        result[0, x] = content_1d[x];
+                        break;
+                    }
+
                     result[y, x] = content[x, y];
                 }
             }
@@ -341,7 +394,6 @@ namespace MatrixHelper
 
         #region other/unused operator overloads
 
-
         // Don't!?
         public static Matrix operator %(Matrix a, Matrix b)
         {
@@ -368,7 +420,10 @@ namespace MatrixHelper
             {
                 for (int x = 0; x < n; x++)
                 {
-                    yield return content[y, x];
+                    if (n == 1)
+                        yield return content_1d[y];
+                    else
+                        yield return content[y, x];
                 }
             }
         }
@@ -392,6 +447,11 @@ namespace MatrixHelper
         #region ILoggable
 
         public string LoggableName { get; private set; } = "Matrix";
+
+        public int Count => Length;
+
+        // public bool IsReadOnly => throw new NotImplementedException();
+
         public string ToLog()
         {
             string log = "";
@@ -432,7 +492,7 @@ namespace MatrixHelper
 
             return $"{log}\n";
         }
-        
+
         #endregion
     }
 }

@@ -2,7 +2,7 @@
 {
     public class PerformantOperations
     {
-        #region Set values of an injected result matrix without returning it and ignoring size checks
+        #region Set values of an injected 'result'-matrix without returning it and ignoring size checks
 
         public static void Add(IMatrix a, IMatrix b, IMatrix result)
         {
