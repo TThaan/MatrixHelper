@@ -1,4 +1,6 @@
 ﻿using CustomLogger;
+using MatrixHelper.JsonConverters;
+using Newtonsoft.Json;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -42,7 +44,7 @@ namespace MatrixHelper
     /// wa: Base class Matrix plus child class StoringMatrix incl fields transpose, rows and columns?
     /// wa: ByteMatrix incl binary operations?
     /// </summary>
-    public class Matrix : IMatrix, IEnumerable<float>
+    public class Matrix : IMatrix, ICollection<float>
     {
         #region fields & ctors
 
@@ -209,10 +211,12 @@ namespace MatrixHelper
 
         #region IMatrix
 
+        [JsonProperty]
         public int Length { get; private set; }
         /// <summary>
         /// amount of rows
         /// </summary>
+        [JsonProperty]
         public int m 
         { 
             get { return _m; } 
@@ -450,6 +454,8 @@ namespace MatrixHelper
 
         public int Count => Length;
 
+        public bool IsReadOnly => throw new NotImplementedException();
+
         // public bool IsReadOnly => throw new NotImplementedException();
 
         public string ToLog()
@@ -491,6 +497,31 @@ namespace MatrixHelper
             }
 
             return $"{log}\n";
+        }
+
+        #endregion
+
+        #region ICollection
+
+        public void Add(float item)
+        {
+            throw new NotImplementedException();
+        }
+        public void Clear()
+        {
+            throw new NotImplementedException();
+        }
+        public bool Contains(float item)
+        {
+            throw new NotImplementedException();
+        }
+        public void CopyTo(float[] array, int arrayIndex)
+        {
+            throw new NotImplementedException();
+        }
+        public bool Remove(float item)
+        {
+            throw new NotImplementedException();
         }
 
         #endregion
